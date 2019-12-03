@@ -2,6 +2,10 @@
  * Terrian class and RGB class
  * Erika Goetz and Aedan Pettit
 */
+
+#ifndef TERRAIN
+#define TERRAIN
+
 #include <ostream>
 using namespace std;
 
@@ -16,12 +20,12 @@ class RGB {
             return 255;
         }
         else{
-          (int) (value * 255.0);
+          return (int) (value * 255.0);
         }
     }
 
   public:
-  
+
       RGB (double r, double g, double b) {
         this->r = r;
         this->g = g;
@@ -43,12 +47,12 @@ class RGB {
       int toRGB () {
         return (0xff << 24) | (toInt (r) << 16) | (toInt (g) << 8) | toInt (b);
       }
-      
-      friend ostream &operator<<( ostream &output, const RGB &color ) { 
-         output << "Red: " << color.r << "\n"; 
-         output << "Green: " << color.g << "\n"; 
+
+      friend ostream &operator<<( ostream &output, const RGB &color ) {
+         output << "Red: " << color.r << "\n";
+         output << "Green: " << color.g << "\n";
          output << "Blue: " << color.b << "\n";
-         return output;            
+         return output;
       }
 };
 
@@ -58,3 +62,5 @@ class Terrain {
       double getAltitude (double i, double j);
       RGB getColor (double i, double j);
 };
+
+#endif
