@@ -1,6 +1,6 @@
 #include <iostream>
 #include <bitset>
-#include "terrian.cpp"
+#include "terrain.cpp"
 #include "transcendentalTerrain.cpp"
 using namespace std;
 
