@@ -57,8 +57,6 @@ class FractalTerrain: public Terrain{
       this->divisions = 1 << lod;
       terrain.resize(divisions + 1);
       for (int i = 0; i < divisions + 1; ++i) terrain[i].resize(divisions + 1);
-      unsigned seed = chrono::system_clock::now().time_since_epoch().count();
-      minstd_rand0 rng(seed);
 
       terrain[0][0] = rnd ();
       terrain[0][divisions] = rnd ();
@@ -86,16 +84,16 @@ class FractalTerrain: public Terrain{
       }
 
       double getAltitude (double i, double j) {
-      double alt = terrain[(int) (i * divisions)][(int) (j * divisions)];
-      return (alt - min) / (max - min);
+        double alt = terrain[(int) (i * divisions)][(int) (j * divisions)];
+        return (alt - min) / (max - min);
       }
 
       RGB getColor (double i, double j) {
-      double a = getAltitude (i, j);
-      if (a < .5)
-        return blue.add (green.subtract (blue).scale ((a - 0.0) / 0.5));
-      else
-        return green.add (white.subtract (green).scale ((a - 0.5) / 0.5));
+        double a = getAltitude (i, j);
+        if (a < .5)
+          return blue.add (green.subtract (blue).scale ((a - 0.0) / 0.5));
+        else
+          return green.add (white.subtract (green).scale ((a - 0.5) / 0.5));
       }
 };
 

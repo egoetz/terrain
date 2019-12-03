@@ -48,7 +48,9 @@ void transcendentalTest(){
 }
 
 void fractalTest(){
-  FractalTerrain testF(1, 1);
+  FractalTerrain testF(6, .5);
+  cout << "Altitude at (1,1):\t" << testF.getAltitude(1,1) << endl;
+  cout << "Color at (1,1):\t" << testF.getColor(1,1) << endl;
 }
 
 int main(){
