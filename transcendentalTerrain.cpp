@@ -1,4 +1,4 @@
-#include "terrian.cpp"
+#include "terrain.cpp"
 #include "math.h"
 
 class TranscendentalTerrain: public Terrain{
