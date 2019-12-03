@@ -1,7 +1,10 @@
 #include <iostream>
 #include <bitset>
+#include <chrono>
+#include <typeinfo>
 #include "terrain.cpp"
 #include "transcendentalTerrain.cpp"
+#include "fractalTerrain.cpp"
 using namespace std;
 
 void RGBtest(){
@@ -44,7 +47,12 @@ void transcendentalTest(){
   cout << testT.getColor(1, 1);
 }
 
+void fractalTest(){
+  FractalTerrain testF(1, 1);
+}
+
 int main(){
   //RGBtest();
-  transcendentalTest();
+  //transcendentalTest();
+  fractalTest();
 }
