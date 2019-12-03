@@ -97,4 +97,66 @@ class FractalTerrain: public Terrain{
       }
 };
 
+class Triple{
+  private:
+    double x, y, z;
+  public:
+    Triple(double x, double y, double z){
+      this->x = x;
+      this->y = y;
+      this->z = z;
+    }
+
+    Triple add(Triple t){
+      return Triple(x + t.x, y + t.y, z + t.z);
+    }
+
+    Triple subtract(Triple t){
+      return Triple(x - t.x, y - t.y, z - t.z);
+    }
+
+    Triple cross(Triple t){
+      double newX = (y * t.z) - (z * t.y);
+      double newY = (z * t.x) - (x * t.z);
+      double newZ = (x * t.y) - (y * t.x);
+      return Triple(newX, newY, newZ);
+    }
+
+    double dot(Triple t){
+      return (x * t.x) + (y * t.y) + (z * t.z);
+    }
+
+    double length2(){
+      return dot(this);
+    }
+
+    Triple scale(double scale){
+      return Triple(x * scale, y * scale, z * scale);
+    }
+
+    Triple normalize(){
+      return scale(1.0 / sqrt(length2()));
+    }
+};
+
+
+class Triangle{
+  private:
+    int i[3];
+    int j[3];
+    Triple n;
+    RGB rgb[3];
+    Color color;
+
+  public:
+    Triangle(int i0, int j0, int i1, int j1, int i2, int j2){
+      i[0] = i0;
+      i[1] = i1;
+      i[2] = i2;
+      j[0] = j0;
+      j[1] = j1;
+      j[2] = j2
+    }
+};
+
 #endif
