@@ -21,13 +21,29 @@ int steps, numTriangles;
 
 
 void display(){
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+
+  gluLookAt(2, 2, 2,
+            0, 0, 0,
+            0, 1, 0);
+
   glBegin(GL_TRIANGLES);
     for(int i = 0; i < numTriangles; i ++){
+      RGB color1 = colors[triangles[i].geti()[0]][triangles[i].getj()[0]];
       Triple vertex1 = map[triangles[i].geti()[0]][triangles[i].getj()[0]];
+
+      RGB color2 = colors[triangles[i].geti()[1]][triangles[i].getj()[1]];
       Triple vertex2 = map[triangles[i].geti()[1]][triangles[i].getj()[1]];
+
+      RGB color3 = colors[triangles[i].geti()[2]][triangles[i].getj()[2]];
       Triple vertex3 = map[triangles[i].geti()[2]][triangles[i].getj()[2]];
+      glColor3f(color1.getR(), color1.getG(), color1.getB());
       glVertex3f(vertex1.getX(), vertex1.getY(), vertex1.getZ());
+      glColor3f(color2.getR(), color2.getG(), color2.getB());
       glVertex3f(vertex2.getX(), vertex2.getY(), vertex2.getZ());
+      glColor3f(color3.getR(), color2.getG(), color3.getB());
       glVertex3f(vertex3.getX(), vertex3.getY(), vertex3.getZ());
     }
 
@@ -101,6 +117,16 @@ void computeNormalsAndLighting(){
 
 }
 
+void reshape(int w, int h){
+  glViewport(0, 0, w, h);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  gluPerspective(45, GLfloat(w) / GLfloat(h),
+    1.0, 500.0);
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+}
+
 void init(int lod, double roughness){
   FractalTerrain tempTerrain = FractalTerrain(lod, roughness);
   terrain = &tempTerrain;
@@ -146,7 +172,9 @@ void init(int lod, double roughness){
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);
 
+  reshape(400, 300);
 }
+
 
 /* Allow the user to quit with 'esc'
  * Preconditions: glutKeyboardFunc(keyboard) must be called
@@ -178,6 +206,7 @@ int main(int argc, char **argv){
 
   glutDisplayFunc(display);
   glutKeyboardFunc(keyboard);
+  glutReshapeFunc(reshape);
 
 
   glutMainLoop();
