@@ -55,6 +55,18 @@ class RGB {
         return (0xff << 24) | (toInt (r) << 16) | (toInt (g) << 8) | toInt (b);
       }
 
+      double getR(){
+        return this->r;
+      }
+
+      double getG(){
+        return this->g;
+      }
+
+      double getB(){
+        return this->b;
+      }
+
       friend ostream &operator<<( ostream &output, const RGB &color ) {
          output << "Red: " << color.r << "\n";
          output << "Green: " << color.g << "\n";

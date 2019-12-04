@@ -21,16 +21,22 @@ int steps, numTriangles;
 
 
 void display(){
+  glBegin(GL_TRIANGLES);
+    for(int i = 0; i < numTriangles; i ++){
+      Triple vertex1 = map[triangles[i].geti()[0]][triangles[i].getj()[0]];
+      Triple vertex2 = map[triangles[i].geti()[1]][triangles[i].getj()[1]];
+      Triple vertex3 = map[triangles[i].geti()[2]][triangles[i].getj()[2]];
+      glVertex3f(vertex1.getX(), vertex1.getY(), vertex1.getZ());
+      glVertex3f(vertex2.getX(), vertex2.getY(), vertex2.getZ());
+      glVertex3f(vertex3.getX(), vertex3.getY(), vertex3.getZ());
+    }
 
-  // glBegin(GL_TRIANGLES);
-  //   for(int i = 0; i < triangles.size(); i ++){
-  //
-  //   }
-  //
-  // glEnd();
+  glEnd();
 
+  glutSwapBuffers();
 }
 
+// Causes segfault - haven't investigated why that happens
 void computeNormalsAndLighting(){
   double ambient = 0.3;
   double diffuse = 4.0;
@@ -134,6 +140,8 @@ void init(int lod, double roughness){
       triangle++;
     }
   }
+
+  //computeNormalsAndLighting();
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);

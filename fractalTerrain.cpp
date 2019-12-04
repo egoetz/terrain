@@ -144,11 +144,28 @@ class Triple{
       return scale(1.0 / sqrt(length2()));
     }
 
+    double getX(){
+      return this->x;
+    }
+
+    double getY(){
+      return this->y;
+    }
+
+    double getZ(){
+      return this->z;
+    }
+
     Triple& operator=(const Triple& t){
       x = t.x;
       y = t.y;
       z = t.z;
       return *this;
+    }
+
+    friend ostream &operator<<( ostream &output, const Triple &t){
+      output << "X: " << t.x <<"\tY: " << t.y << "\tZ: " << t.z << endl;
+      return output;
     }
 };
 
@@ -186,6 +203,10 @@ class Triangle{
 
     void setColor(RGB color){
       this->color = color;
+    }
+
+    RGB getColor(){
+      return this->color;
     }
 
     double* geti(){
