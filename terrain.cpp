@@ -26,11 +26,18 @@ class RGB {
 
   public:
 
+      RGB(){
+       this->r = 0;
+       this->g = 0;
+       this->b = 0;
+     }
+
       RGB (double r, double g, double b) {
         this->r = r;
         this->g = g;
         this->b = b;
       }
+
 
       RGB add (RGB rgb) {
         return RGB (r + rgb.r, g + rgb.g, b + rgb.b);
@@ -53,6 +60,13 @@ class RGB {
          output << "Green: " << color.g << "\n";
          output << "Blue: " << color.b << "\n";
          return output;
+      }
+
+      RGB& operator=(const RGB& rgb){
+        r = rgb.r;
+        g = rgb.g;
+        b = rgb.b;
+        return *this;
       }
 };
 

@@ -107,6 +107,12 @@ class Triple{
       this->z = z;
     }
 
+    Triple(){
+      this->x = 0;
+      this->y = 0;
+      this->z = 0;
+    }
+
     Triple add(Triple t){
       return Triple(x + t.x, y + t.y, z + t.z);
     }
@@ -136,6 +142,13 @@ class Triple{
 
     Triple normalize(){
       return scale(1.0 / sqrt(length2()));
+    }
+
+    Triple& operator=(const Triple& t){
+      x = t.x;
+      y = t.y;
+      z = t.z;
+      return *this;
     }
 };
 

@@ -6,19 +6,49 @@
 #include <iostream>
 #include <math.h>
 #include <stdlib.h>
+#include <vector>
 
 #include "fractalTerrain.cpp"
+using namespace std;
 
 FractalTerrain *terrain;
+// Vectors containing coordinates and colors
+vector<vector<Triple> > map;
+vector<vector<RGB> > colors;
 
 
 void display(){
+
 
 }
 
 void init(int lod, double roughness){
   FractalTerrain tempTerrain = FractalTerrain(lod, roughness);
   terrain = &tempTerrain;
+  double x, z, altitude;
+
+  int steps = 1 << lod;
+
+  // Resize outer vectors
+  map.resize(steps + 1);
+  colors.resize(steps + 1);
+
+  // Resize inner vectors
+  for(int k = 0; k <= steps; k++){
+    map[k].resize(steps+1);
+    colors[k].resize(steps+1);
+  }
+
+  // Fill map and color vectors
+  for(int i = 0; i <= steps; i++){
+    for(int j = 0; j <= steps; j++){
+      x = 1.0 * i / steps;
+      z = 1.0 * j / steps;
+      altitude = terrain->getAltitude(x, z);
+      map[i][j] = Triple(x, altitude * roughness, z);
+      colors[i][j] = terrain->getColor(x,z);
+    }
+  }
 }
 
 /* Allow the user to quit with 'esc'
