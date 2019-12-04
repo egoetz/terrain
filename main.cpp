@@ -13,12 +13,85 @@ using namespace std;
 
 FractalTerrain *terrain;
 // Vectors containing coordinates and colors
-vector<vector<Triple> > map;
+vector<vector<Triple> > map, normals;
 vector<vector<RGB> > colors;
+vector<Triangle> triangles;
+
+int steps, numTriangles;
 
 
 void display(){
 
+  // glBegin(GL_TRIANGLES);
+  //   for(int i = 0; i < triangles.size(); i ++){
+  //
+  //   }
+  //
+  // glEnd();
+
+}
+
+void computeNormalsAndLighting(){
+  double ambient = 0.3;
+  double diffuse = 4.0;
+
+  normals.resize(steps+1);
+  for(int i = 0; i < normals.size(); i++){
+    normals[i].resize(steps+1);
+  }
+
+  for(int i = 0; i < numTriangles; i++){
+    for(int j = 0; j < 3; j++){
+      normals[i][j] = Triple();
+    }
+  }
+
+  Triple sun = Triple(3.6, 3.9, 0.6);
+
+  // Compute triangle normals and vertex averaged normals
+  for(int i = 0; i < numTriangles; i++){
+    Triple v0 = map[triangles[i].geti()[0]][triangles[i].getj()[0]];
+    Triple v1 = map[triangles[i].geti()[1]][triangles[i].getj()[1]];
+    Triple v2 = map[triangles[i].geti()[2]][triangles[i].getj()[2]];
+    Triple normal = v0.subtract(v1).cross(v2.subtract(v1)).normalize();
+    triangles[i].setNorm(normal);
+
+    for(int j = 0; j < 3; j++){
+      normals[triangles[i].geti()[j]][triangles[i].getj()[j]] =
+        normals[triangles[i].geti()[j]][triangles[i].getj()[j]].add(normal);
+    }
+  }
+
+  // Compute vertex colors and triangle average colors
+  for(int i = 0; i < numTriangles; i++){
+    RGB avg = RGB();
+    for(int j = 0; j < 3; j++){
+      int k = triangles[i].geti()[j];
+      int l = triangles[i].getj()[j];
+      Triple vertex = map[k][l];
+      RGB color = colors[k][l];
+      Triple normal = normals[k][l].normalize();
+      Triple light = vertex.subtract(sun);
+      double distance2 = light.length2();
+      double dot = light.normalize().dot(normal);
+      double lighting;
+      if(dot < 0.0){
+        lighting = -dot / distance2;
+      }
+      else{
+        lighting = 0.0;
+      }
+
+      color = color.scale(lighting);
+      // Left out triangles[i].color[j] = color;
+      // I didn't understand what it was doing - not sure if it makes sense in C++
+      // Java has a Color class so maybe it could use this but it does not appear to be
+      // Compatible with our RGB class
+      avg = avg.add(color);
+    }
+
+    triangles[i].setColor(avg.scale(1.0/3.0));
+  }
 
 }
 
@@ -27,11 +100,14 @@ void init(int lod, double roughness){
   terrain = &tempTerrain;
   double x, z, altitude;
 
-  int steps = 1 << lod;
+
+  steps = 1 << lod;
+  numTriangles = steps * steps * 2;
 
   // Resize outer vectors
   map.resize(steps + 1);
   colors.resize(steps + 1);
+  triangles.resize(numTriangles);
 
   // Resize inner vectors
   for(int k = 0; k <= steps; k++){
@@ -49,6 +125,19 @@ void init(int lod, double roughness){
       colors[i][j] = terrain->getColor(x,z);
     }
   }
+  int triangle = 0;
+  for(int m = 0; m < steps; m++){
+    for(int n = 0; n < steps; n++){
+      triangles[triangle] = Triangle(m, n, m + 1, n, m, n + 1);
+      triangle++;
+      triangles[triangle] = Triangle(m +1, n, m + 1, n + 1, m, n + 1);
+      triangle++;
+    }
+  }
+
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glEnable(GL_DEPTH_TEST);
+
 }
 
 /* Allow the user to quit with 'esc'
@@ -80,6 +169,7 @@ int main(int argc, char **argv){
 
 
   glutDisplayFunc(display);
+  glutKeyboardFunc(keyboard);
 
 
   glutMainLoop();

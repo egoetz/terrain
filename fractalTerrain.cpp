@@ -155,14 +155,14 @@ class Triple{
 
 class Triangle{
   private:
-    int i[3];
-    int j[3];
-    //Triple n;
+    double i[3];
+    double j[3];
+    Triple norm;
     //RGB rgb[3];
-    //Color color;
+    RGB color;
 
   public:
-    Triangle(int i0, int j0, int i1, int j1, int i2, int j2){
+    Triangle(double i0, double j0, double i1, double j1, double i2, double j2){
       i[0] = i0;
       i[1] = i1;
       i[2] = i2;
@@ -170,6 +170,41 @@ class Triangle{
       j[1] = j1;
       j[2] = j2;
     }
+
+    Triangle(){
+      i[0] = 0;
+      i[1] = 0;
+      i[2] = 0;
+      j[0] = 0;
+      j[1] = 0;
+      j[2] = 0;
+    }
+
+    void setNorm(Triple n){
+      this->norm = n;
+    }
+
+    void setColor(RGB color){
+      this->color = color;
+    }
+
+    double* geti(){
+      static double iVec[3];
+      iVec[0] = i[0];
+      iVec[1] = i[1];
+      iVec[2] = i[2];
+      return iVec;
+    }
+
+    double* getj(){
+      static double jVec[3];
+      jVec[0] = j[0];
+      jVec[1] = j[1];
+      jVec[2] = j[2];
+      return jVec;
+    }
+
+
 };
 
 #endif
