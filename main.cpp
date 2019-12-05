@@ -18,6 +18,8 @@ vector<vector<RGB> > colors;
 vector<Triangle> triangles;
 
 int steps, numTriangles;
+int lod;
+double roughness;
 
 
 void display(){
@@ -62,7 +64,8 @@ void computeNormalsAndLighting(){
     }
   }
 
-  Triple sun = Triple(2.0, 2.0, 2.0);
+  //Triple sun = Triple(3.6, 3.9, 0.6);
+  Triple sun = Triple(-3.0, 4.0, 2.0);
 
   // Compute triangle normals and vertex averaged normals
   for(int i = 0; i < numTriangles; i++){
@@ -74,6 +77,34 @@ void computeNormalsAndLighting(){
     for(int j = 0; j < 3; j++){
       normals[triangles[i].geti()[j]][triangles[i].getj()[j]] =
         normals[triangles[i].geti()[j]][triangles[i].getj()[j]].add(normal);
+    }
+  }
+
+  vector<vector<double> > shade;
+  shade.resize(steps + 1);
+  for(int i = 0; i <= steps; i++){
+    shade[i].resize(steps + 1);
+    for(int j = 0; j <= steps; j++){
+      shade[i][j] = 1.0;
+      Triple vertex = map[i][j];
+      Triple ray = sun.subtract(vertex);
+      double distance = steps * sqrt(ray.getX() * ray.getX() + ray.getZ() * ray.getZ());
+      for(double place = 1.0; place < distance; place += 1.0){
+        Triple sample = vertex.add(ray.scale(place/distance));
+        double sx = sample.getX();
+        double sy = sample.getY();
+        double sz = sample.getZ();
+        if((sx < 0.0) || (sx > 1.0) || (sz < 0.0) || (sz > 1.0)){
+          break;
+        }
+
+        double ground = roughness * terrain->getAltitude(sx, sz);
+        if(ground > sy){
+          shade[i][j] = (2 * sy)/ground;
+          break;
+        }
+
+      }
     }
   }
 
@@ -92,22 +123,20 @@ void computeNormalsAndLighting(){
       Triple light = vertex.subtract(sun);
       double distance2 = light.length2();
       double dot = light.normalize().dot(normal);
+      double shadow = shade[k][l];
       double lighting;
       if(dot < 0.0){
-        lighting = ambient - dot / distance2;
+        lighting = ambient + diffuse * (dot / (distance2 * shadow));
       }
       else{
         lighting = ambient;
       }
       color = color.scale(lighting);
-      // Left out triangles[i].color[j] = color;
-      // I didn't understand what it was doing - not sure if it makes sense in C++
-      // Java has a Color class so maybe it could use this but it does not appear to be
-      // Compatible with our RGB class
+
       avg = avg.add(color);
     }
-
-    triangles[i].setColor(avg.scale(1.0/3.0));
+    //cout << avg.scale(3.0/4.0) << endl;
+    triangles[i].setColor(avg.scale(3.0/4.0));
   }
 
 }
@@ -190,9 +219,6 @@ int main(int argc, char **argv){
   glutInit(&argc,argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 	glutCreateWindow("Terrain");
-
-  int lod;
-  double roughness;
 
   cout << "Enter an integer level of detail: ";
   cin >> lod;
