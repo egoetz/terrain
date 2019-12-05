@@ -1,13 +1,6 @@
-# TODO
+# CS300 - Lab 4
+## Erika Goetz, Aedan Pettit
 
-* Finish turning test file into class
-* Center the terrain in the window
-* Add color to terrain
-* Fix normals/lighting so that there is no segfault
-* Add shade/shadows from project description
-* Possible extensions
-   * Different colors
-   * Water
-* Documentation
-* Finish paper
-* Mouse control
+We created a fractal terrain as directed by the project instructions.
+This terrain is able to be rotated by left-clicking the mouse and dragging it across the screen.
+Additionally, the user may reset the orientation of the terrain using the menu accessed via a right-click.
