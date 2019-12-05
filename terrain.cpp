@@ -12,7 +12,7 @@ using namespace std;
 
 class RGB {
   private:
-    int r, g, b;
+    double r, g, b;
     int toInt (double value) {
         if(value < 0.0){
             return 0;
@@ -38,17 +38,17 @@ class RGB {
         this->g = g;
         this->b = b;
       }
-      
+
       ~RGB(){};
 
       double getRed () {
         return this->r;
       }
-      
+
       double getGreen () {
         return this->g;
       }
-      
+
       double getBlue () {
         return this->b;
       }
@@ -72,7 +72,7 @@ class RGB {
       }
 
       int toRGB () {
-        return (255 << 24) | (this->r << 16) | (this->g << 8) | this->b;
+        return (255 << 24) | (toInt(this->r) << 16) | (toInt(this->g) << 8) | toInt(this->b);
       }
 
       double getR(){
