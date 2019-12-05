@@ -53,8 +53,8 @@ class FractalTerrain: public Terrain{
   public:
     FractalTerrain (int lod, double roughness) {
       rand.seed(seed);
-      this->roughness = roughness;
-      this->divisions = 1 << lod;
+      (*this).roughness = roughness;
+      (*this).divisions = 1 << lod;
       terrain.resize(divisions + 1);
       for (int i = 0; i < divisions + 1; ++i) terrain[i].resize(divisions + 1);
 
@@ -102,15 +102,15 @@ class Triple{
     double x, y, z;
   public:
     Triple(double x, double y, double z){
-      this->x = x;
-      this->y = y;
-      this->z = z;
+      (*this).x = x;
+      (*this).y = y;
+      (*this).z = z;
     }
 
     Triple(){
-      this->x = 0;
-      this->y = 0;
-      this->z = 0;
+      (*this).x = 0;
+      (*this).y = 0;
+      (*this).z = 0;
     }
 
     Triple add(Triple t){
@@ -145,15 +145,15 @@ class Triple{
     }
 
     double getX(){
-      return this->x;
+      return (*this).x;
     }
 
     double getY(){
-      return this->y;
+      return (*this).y;
     }
 
     double getZ(){
-      return this->z;
+      return (*this).z;
     }
 
     Triple& operator=(const Triple& t){
@@ -172,14 +172,17 @@ class Triple{
 
 class Triangle{
   private:
-    double i[3];
-    double j[3];
+    vector<int> i;
+    vector<int> j;
     Triple norm;
-    //RGB rgb[3];
+    vector<RGB>  rgb;
     RGB color;
 
   public:
-    Triangle(double i0, double j0, double i1, double j1, double i2, double j2){
+    Triangle(int i0, int j0, int i1, int j1, int i2, int j2){
+      i.resize(3);
+      j.resize(3);
+      rgb.resize(3);
       i[0] = i0;
       i[1] = i1;
       i[2] = i2;
@@ -189,6 +192,9 @@ class Triangle{
     }
 
     Triangle(){
+      i.resize(3);
+      j.resize(3);
+      rgb.resize(3);
       i[0] = 0;
       i[1] = 0;
       i[2] = 0;
@@ -198,31 +204,23 @@ class Triangle{
     }
 
     void setNorm(Triple n){
-      this->norm = n;
+      (*this).norm = n;
     }
 
     void setColor(RGB color){
-      this->color = color;
+      (*this).color = color;
     }
 
     RGB getColor(){
-      return this->color;
+      return (*this).color;
     }
 
-    double* geti(){
-      static double iVec[3];
-      iVec[0] = i[0];
-      iVec[1] = i[1];
-      iVec[2] = i[2];
-      return iVec;
+    vector<int> geti(){
+      return (*this).i;
     }
 
-    double* getj(){
-      static double jVec[3];
-      jVec[0] = j[0];
-      jVec[1] = j[1];
-      jVec[2] = j[2];
-      return jVec;
+    vector<int> getj(){
+      return (*this).j;
     }
 
 

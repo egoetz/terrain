@@ -7,6 +7,7 @@
 #define TERRAIN
 
 #include <ostream>
+#include <iostream>
 using namespace std;
 
 class RGB {
@@ -36,6 +37,12 @@ class RGB {
         this->r = r;
         this->g = g;
         this->b = b;
+      }
+
+      RGB(const RGB &rgb){
+        this->r = rgb.r;
+        this->g = rgb.g;
+        this->b = rgb.b;
       }
 
 
@@ -75,9 +82,9 @@ class RGB {
       }
 
       RGB& operator=(const RGB& rgb){
-        r = rgb.r;
-        g = rgb.g;
-        b = rgb.b;
+        this->r = rgb.r;
+        this->g = rgb.g;
+        this->b = rgb.b;
         return *this;
       }
 };
