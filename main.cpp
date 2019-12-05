@@ -21,6 +21,11 @@ int steps, numTriangles;
 int lod;
 double roughness;
 
+GLfloat xAngle = 0.0;
+GLfloat yAngle = 0.0;
+
+int moving = 0, startx=0, starty=0;
+
 
 void display(){
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -30,20 +35,26 @@ void display(){
   gluLookAt(2.0, 2.0, 2.0,
             0, 0, 0,
             0, 1, 0);
+  glPushMatrix();
+      glTranslatef(0.5, 0.5, 0.5);
+      glRotatef(xAngle, 0.0, 1.0, 0.0);
+      glRotatef(yAngle, 1.0, 0.0, 0.0);
+      glTranslatef(-0.5, -0.5, -0.5);
 
-  glBegin(GL_TRIANGLES);
-    for(int i = 0; i < numTriangles; i ++){
-      RGB color = triangles[i].getColor();
-      Triple vertex1 = map[triangles[i].geti()[0]][triangles[i].getj()[0]];
-      Triple vertex2 = map[triangles[i].geti()[1]][triangles[i].getj()[1]];
-      Triple vertex3 = map[triangles[i].geti()[2]][triangles[i].getj()[2]];
-      glColor3f(color.getR(), color.getG(), color.getB());
-      glVertex3f(vertex1.getX(), vertex1.getY(), vertex1.getZ());
-      glVertex3f(vertex2.getX(), vertex2.getY(), vertex2.getZ());
-      glVertex3f(vertex3.getX(), vertex3.getY(), vertex3.getZ());
-    }
+    glBegin(GL_TRIANGLES);
+      for(int i = 0; i < numTriangles; i ++){
+        RGB color = triangles[i].getColor();
+        Triple vertex1 = map[triangles[i].geti()[0]][triangles[i].getj()[0]];
+        Triple vertex2 = map[triangles[i].geti()[1]][triangles[i].getj()[1]];
+        Triple vertex3 = map[triangles[i].geti()[2]][triangles[i].getj()[2]];
+        glColor3f(color.getR(), color.getG(), color.getB());
+        glVertex3f(vertex1.getX(), vertex1.getY(), vertex1.getZ());
+        glVertex3f(vertex2.getX(), vertex2.getY(), vertex2.getZ());
+        glVertex3f(vertex3.getX(), vertex3.getY(), vertex3.getZ());
+      }
 
-  glEnd();
+    glEnd();
+  glPopMatrix();
 
   glutSwapBuffers();
 }
@@ -215,6 +226,47 @@ void keyboard(unsigned char key, int x, int y){
   }
 }
 
+/* Allow the user to move terrain
+ * Preconditions: A glut window running openGL must exist and have been initialized
+ *
+ * Postconditions: The openGL model can be turned by the user's mouse or trackpad
+*/
+static void mouse(int button, int state, int x, int y){
+	if (button == GLUT_LEFT_BUTTON){
+		if (state == GLUT_DOWN){
+			moving = 1;
+			startx = x;
+			starty = y;
+		}
+		if (state == GLUT_UP){
+			moving = 0;
+		}
+	}
+}
+
+/* Move openGL model
+ * Preconditions: A glut window running openGL must exist and have been initialized
+ *
+ * Postconditions: The model is moved
+ */
+static void motion(int x, int y){
+	if (moving){
+		xAngle = (xAngle + (x - startx));
+		yAngle = (yAngle + (y - starty));
+		startx = x;
+		starty = y;
+		glutPostRedisplay();
+	}
+}
+
+void menu(int id){
+  if(id == 1){
+    xAngle = 0.0;
+    yAngle = 0.0;
+    glutPostRedisplay();
+  }
+}
+
 int main(int argc, char **argv){
   glutInit(&argc,argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
@@ -231,6 +283,12 @@ int main(int argc, char **argv){
   glutDisplayFunc(display);
   glutKeyboardFunc(keyboard);
   glutReshapeFunc(reshape);
+  glutMouseFunc(mouse);
+  glutMotionFunc(motion);
+
+  glutCreateMenu(menu);
+  glutAddMenuEntry("Reset", 1);
+  glutAttachMenu(GLUT_RIGHT_BUTTON);
 
 
   glutMainLoop();
